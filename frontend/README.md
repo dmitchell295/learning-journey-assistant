@@ -1,16 +1,40 @@
-# React + Vite
+# Learning Journey Assistant — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + Vite frontend for the mastery dashboard.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Install dependencies:
+2. Run the dev server:
+3. Open http://localhost:5173/ in your browser.
 
-## React Compiler
+## Current Status (as of Sprint 1)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Dashboard wireframe is built and styled to match the team's Figma reference
+  (La Trobe crimson branding, phone-frame layout, bottom tab nav).
+- All data shown is currently **hardcoded placeholder data** — nothing is
+  connected to the backend API yet.
+- Tab clicks in the bottom nav currently only change visual active state;
+  they don't switch page content yet.
 
-## Expanding the Oxlint configuration
+## Component Structure
+## What's Next (CBLS-45 / CBLS-46)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- **CBLS-45**: Confirm/extend the static dashboard with more realistic
+  placeholder data (multiple subjects, more detailed strengths/gaps lists).
+- **CBLS-46**: Review the Backend lead's API endpoint response shapes
+  (`GET /subject/:id`, `GET /assessment/:id`, etc. — see CBLS-32/35) and
+  confirm the field names/structure will map cleanly onto these components
+  before wiring in real data.
+
+## Where Placeholder Data Lives
+
+All placeholder values are currently hardcoded directly inside the JSX of
+each component (e.g. `72%` in `UnderstandingLevel.jsx`, static text in
+`Strengths.jsx`/`Gaps.jsx`/`ProgressTrends.jsx`). These will need to be
+replaced with props or state once connected to the backend API.
+
+## Design Reference
+
+Visual direction follows the team's Figma prototype: 
+https://five-misty-53477158.figma.site/
