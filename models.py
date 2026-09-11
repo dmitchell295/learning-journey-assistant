@@ -35,6 +35,7 @@ class Assignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
     name = db.Column(db.String(150), nullable=False)
+    subject = db.relationship('Subject')
 
 class Assessment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -44,6 +45,7 @@ class Assessment(db.Model):
     grade = db.Column(db.Float)
     mastery_estimate = db.Column(db.String(30))  # "Not Yet Achieved" | "Partially Achieved" | "Achieved"
     identified_gap = db.Column(db.Text)
+    assignment = db.relationship('Assignment')
 
 class RubricResult(db.Model):
     id = db.Column(db.Integer, primary_key=True)
