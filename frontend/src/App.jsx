@@ -4,6 +4,8 @@ import Strengths from './components/Strengths';
 import Gaps from './components/Gaps';
 import ProgressTrends from './components/ProgressTrends';
 import './App.css';
+import { useEffect } from "react";
+import { getSubjects } from "./api";
 
 const TABS = [
   { id: 'understanding', label: 'Understanding', icon: '📊' },
