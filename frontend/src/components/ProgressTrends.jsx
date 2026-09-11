@@ -4,9 +4,9 @@ export default function ProgressTrends() {
       <div className="list-icon icon-trends">📈</div>
       <div className="list-content">
         <h3>Progress Trends</h3>
-        <p>Placeholder content — trend chart goes here</p>
+        <p>Mastery has improved from 58% to 72% over the last 4 assessments.</p>
       </div>
-      <span className="tag tag-trends">Over time</span>
+      <span className="tag tag-trends">Improving</span>
     </div>
   );
 }
