@@ -21,11 +21,7 @@ def get_subjects():
     subjects = Subject.query.all()
     return {
         "subjects": [
-            {
-                "id": subject.id,
-                "code": subject.code,
-                "name": subject.name
-            }
+            {"id": subject.id, "code": subject.code, "name": subject.name}
             for subject in subjects
         ]
     }
@@ -36,10 +32,7 @@ def get_students():
     students = Student.query.all()
     return {
         "students": [
-            {
-                "id": student.id,
-                "name": student.name
-            }
+            {"id": student.id, "name": student.name}
             for student in students
         ]
     }
@@ -51,58 +44,73 @@ def get_assessments():
     return {
         "assessments": [
             {
-                "id": assessment.id,
-                "student_id": assessment.student_id,
-                "subject_id": assessment.subject_id,
-                "feedback_text": assessment.feedback_text,
-                "mastery_score": assessment.mastery_score
+                "id": a.id,
+                "student_id": a.student_id,
+                "subject_id": a.assignment.subject_id,
+                "feedback_text": a.feedback_text,
+                "grade": a.grade,
+                "mastery_estimate": a.mastery_estimate,
+                "identified_gap": a.identified_gap,
             }
-            for assessment in assessments
+            for a in assessments
         ]
     }
+
 
 @app.route("/subject/<int:subject_id>")
 def get_subject(subject_id):
     subject = db.session.get(Subject, subject_id)
-
     if subject is None:
         return {"error": "Subject not found"}, 404
-
-    return {
-        "id": subject.id,
-        "code": subject.code,
-        "name": subject.name
-    }
+    return {"id": subject.id, "code": subject.code, "name": subject.name}
 
 
 @app.route("/assessment/<int:assessment_id>")
 def get_assessment(assessment_id):
-    assessment = db.session.get(Assessment, assessment_id)
-
-    if assessment is None:
+    a = db.session.get(Assessment, assessment_id)
+    if a is None:
         return {"error": "Assessment not found"}, 404
-
     return {
-        "id": assessment.id,
-        "student_id": assessment.student_id,
-        "subject_id": assessment.subject_id,
-        "feedback_text": assessment.feedback_text,
-        "mastery_score": assessment.mastery_score
+        "id": a.id,
+        "student_id": a.student_id,
+        "subject_id": a.assignment.subject_id,
+        "feedback_text": a.feedback_text,
+        "grade": a.grade,
+        "mastery_estimate": a.mastery_estimate,
+        "identified_gap": a.identified_gap,
     }
 
 
 @app.route("/rubric/<int:criterion_id>")
 def get_rubric(criterion_id):
     criterion = db.session.get(RubricCriterion, criterion_id)
-
     if criterion is None:
         return {"error": "Rubric criterion not found"}, 404
-
     return {
         "id": criterion.id,
         "outcome_id": criterion.outcome_id,
-        "description": criterion.description
+        "description": criterion.description,
     }
+
+
+@app.route("/student/<int:student_id>/summary")
+def student_summary(student_id):
+    student = db.session.get(Student, student_id)
+    if student is None:
+        return {"error": "Student not found"}, 404
+
+    assessments = Assessment.query.filter_by(student_id=student_id).all()
+    strengths = [a.identified_gap for a in assessments if a.mastery_estimate == "Achieved"]
+    gaps = [a.identified_gap for a in assessments if a.mastery_estimate in ("Not Yet Achieved", "Partially Achieved")]
+
+    return {
+        "student_id": student.id,
+        "student_name": student.name,
+        "strengths": strengths,
+        "gaps": gaps,
+        "assessment_count": len(assessments),
+    }
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
