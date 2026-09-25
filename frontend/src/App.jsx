@@ -4,8 +4,7 @@ import Strengths from './components/Strengths';
 import Gaps from './components/Gaps';
 import ProgressTrends from './components/ProgressTrends';
 import './App.css';
-import { useEffect } from "react";
-import { getSubjects } from "./api";
+import { useDashboardData } from './hooks/useDashboardData';
 
 const TABS = [
   { id: 'understanding', label: 'Understanding', icon: '📊' },
@@ -16,6 +15,7 @@ const TABS = [
 
 function App() {
   const [activeTab, setActiveTab] = useState('understanding');
+  const { loading, error, data } = useDashboardData();
 
   return (
     <div className="page">
@@ -36,22 +36,28 @@ function App() {
         </header>
 
         <main className="app-body">
-          <UnderstandingLevel />
+          {loading && <p className="loading-state">Loading dashboard...</p>}
+          {error && <p className="error-state">Couldn't load dashboard: {error}</p>}
+          {!loading && !error && data && (
+            <>
+              <UnderstandingLevel percent={data.avgMastery} />
 
-          <div className="stat-row">
-            <div className="stat-tile">
-              <span className="stat-value">5/8</span>
-              <span className="stat-label">Subjects on track</span>
-            </div>
-            <div className="stat-tile">
-              <span className="stat-value">3</span>
-              <span className="stat-label">Gaps flagged</span>
-            </div>
-          </div>
+              <div className="stat-row">
+                <div className="stat-tile">
+                  <span className="stat-value">{data.subjectsOnTrack}/{data.totalSubjects}</span>
+                  <span className="stat-label">Subjects on track</span>
+                </div>
+                <div className="stat-tile">
+                  <span className="stat-value">{data.gapsFlagged}</span>
+                  <span className="stat-label">Gaps flagged</span>
+                </div>
+              </div>
 
-          <Strengths />
-          <Gaps />
-          <ProgressTrends />
+              <Strengths items={data.strengths} />
+              <Gaps items={data.gaps} />
+              <ProgressTrends assessments={data.assessments} />
+            </>
+          )}
         </main>
 
         <nav className="bottom-nav">
