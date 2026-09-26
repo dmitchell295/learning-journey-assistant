@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from models import db, Student, Subject, Assessment, RubricCriterion
-from moodle_client import get_courses, get_course_outcomes, get_grade_items, get_assignments, get_grading_definitions, MoodleAPIError
+from moodle_client import get_courses, get_course_outcomes, get_grade_items, get_assignments, get_grading_definitions, get_grades, MoodleAPIError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning_journey.db'
