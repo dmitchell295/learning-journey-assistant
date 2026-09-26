@@ -147,5 +147,23 @@ def moodle_course_assignments(course_id):
     except MoodleAPIError as e:
         return {"error": str(e)}, 502
 
+
+@app.route("/moodle/rubric/<int:area_id>")
+def moodle_rubric_definition(area_id):
+    try:
+        definitions = get_grading_definitions([area_id])
+        return {"rubric_definitions": definitions}
+    except MoodleAPIError as e:
+        return {"error": str(e)}, 502
+
+
+@app.route("/moodle/assignment/<int:assignment_id>/grades")
+def moodle_assignment_grades(assignment_id):
+    try:
+        grades = get_grades([assignment_id])
+        return {"grades": grades}
+    except MoodleAPIError as e:
+        return {"error": str(e)}, 502
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
