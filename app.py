@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from models import db, Student, Subject, Assessment, RubricCriterion
-from moodle_client import get_courses, get_course_outcomes, get_grade_items, get_assignments, get_grading_definitions, get_gradingform_instances, MoodleAPIError
+from moodle_client import get_courses, get_course_outcomes, get_grade_items, get_assignments, get_grades, get_grading_definitions, get_gradingform_instances, MoodleAPIError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning_journey.db'
@@ -154,11 +154,19 @@ def moodle_rubric(cmid):
     except MoodleAPIError as e:
         return {"error": str(e)}, 502
 
-
 @app.route("/moodle/rubric/definition/<int:definition_id>/instances")
 def moodle_rubric_instances(definition_id):
     try:
         return {"instances": get_gradingform_instances(definition_id)}
+    except MoodleAPIError as e:
+        return {"error": str(e)}, 502
+
+
+@app.route("/moodle/assignment/<int:assignment_id>/grades")
+def moodle_assignment_grades(assignment_id):
+    try:
+        grades = get_grades([assignment_id])
+        return {"grades": grades}
     except MoodleAPIError as e:
         return {"error": str(e)}, 502
 
