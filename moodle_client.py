@@ -9,9 +9,12 @@ for the full list core_webservice_get_site_info returned.
 
 import os
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 MOODLE_URL = os.environ["MOODLE_URL"].rstrip("/")
-MOODLE_TOKEN = os.environ["MOODLE_TOKEN"]
+MOODLE_TOKEN = os.environ["MOODLE_TOKEN"].strip()
 ENDPOINT = f"{MOODLE_URL}/webservice/rest/server.php"
 
 
@@ -71,13 +74,21 @@ def get_grade_items(course_id):
     return _call("gradereport_user_get_grade_items", courseid=course_id)
 
 
-def get_grading_definitions(area_ids):
-    """area_ids: list of grading area IDs (rubrics live under Moodle's generic grading API)."""
-    params = {}
-    for i, aid in enumerate(area_ids):
-        params[f"areaids[{i}]"] = aid
+def get_grading_definitions(cmids, areaname="submissions", activeonly=1):
+    """cmids: list of course module IDs (one per assignment)."""
+    params = {"areaname": areaname, "activeonly": activeonly}
+    for i, cmid in enumerate(cmids):
+        params[f"cmids[{i}]"] = cmid
     return _call("core_grading_get_definitions", **params)
 
+
+def get_gradingform_instances(definition_id, since=0):
+    """Student rubric results for a given rubric definition."""
+    return _call(
+        "core_grading_get_gradingform_instances",
+        definitionid=definition_id,
+        since=since,
+    )
 
 def get_course_outcomes(course_id):
     """Custom plugin - LJA-specific learning outcomes for a course."""
