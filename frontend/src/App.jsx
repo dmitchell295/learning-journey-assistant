@@ -13,9 +13,15 @@ const TABS = [
   { id: 'trends', label: 'Trends', icon: '📈' },
 ];
 
+function gapBannerText(count) {
+  if (count === 0) return 'No skill gaps flagged';
+  return `${count} skill gap${count === 1 ? '' : 's'} flagged`;
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState('understanding');
-  const { loading, error, data } = useDashboardData();
+  const [studentId, setStudentId] = useState(null); // null = first student with data
+  const { loading, error, data } = useDashboardData(studentId);
 
   return (
     <div className="page">
@@ -26,13 +32,32 @@ function App() {
               <span className="brand-badge">LT</span>
               <span className="brand-name">La Trobe University</span>
             </div>
-            <div className="avatar">DM</div>
+            <div className="avatar">
+              {data?.activeStudentId != null ? `S${data.activeStudentId}` : '–'}
+            </div>
           </div>
           <h1>Learning Journey</h1>
-          <div className="alert-banner">
-            <span className="alert-dot"></span>
-            2 skill gaps flagged this week — tap to review
-          </div>
+
+          {data && data.studentIds.length > 1 && (
+            <label className="student-picker">
+              Viewing
+              <select
+                value={data.activeStudentId ?? ''}
+                onChange={(e) => setStudentId(Number(e.target.value))}
+              >
+                {data.studentIds.map((id) => (
+                  <option key={id} value={id}>Student {id}</option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {data && (
+            <div className="alert-banner">
+              <span className="alert-dot"></span>
+              {gapBannerText(data.gapsFlagged)}
+            </div>
+          )}
         </header>
 
         <main className="app-body">
@@ -55,7 +80,7 @@ function App() {
 
               <Strengths items={data.strengths} />
               <Gaps items={data.gaps} />
-              <ProgressTrends assessments={data.assessments} />
+              <ProgressTrends assignmentCount={data.assignmentCount} avgMastery={data.avgMastery} />
             </>
           )}
         </main>

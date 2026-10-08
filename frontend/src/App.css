@@ -295,3 +295,53 @@ body {
   .phone-frame { border-radius: 0; max-width: 100%; min-height: 100vh; }
   .app-header { border-radius: 0; }
 }
+
+/* --- CBLS-76 additions: paste at the end of App.css --- */
+
+/* Card rows: criterion on one line, status underneath */
+.list-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-row {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 10px;
+}
+
+.card-row:last-child {
+  margin-bottom: 0;
+}
+
+.card-row-title {
+  font-weight: 600;
+}
+
+.card-row-meta {
+  font-size: 0.9em;
+  opacity: 0.75;
+}
+
+/* Student picker in the red header */
+.student-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 12px;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.student-picker select {
+  font: inherit;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.student-picker select option {
+  color: #000;
+}
