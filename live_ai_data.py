@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 sys.path.append("Prototype AI Gap Detection Engine")
 from mastery_estimator import estimate_mastery
+from save_results import save_student_results
 
 BASE_URL = "http://127.0.0.1:5000"
 
@@ -18,7 +19,6 @@ def get_live_data(url):
         print("API error:", error)
         return None
 
-
 rubric_data = get_live_data(f"{BASE_URL}/moodle/rubric/26")
 instance_data = get_live_data(f"{BASE_URL}/moodle/rubric/definition/99/instances")
 grade_data = get_live_data(f"{BASE_URL}/moodle/assignment/10/grades")
@@ -26,11 +26,6 @@ grade_data = get_live_data(f"{BASE_URL}/moodle/assignment/10/grades")
 if rubric_data == None or instance_data == None or grade_data == None:
     print("Live data is not available. Please try again later.")
     sys.exit()
-
-
-
-
-
 
 
 areas = rubric_data.get("rubric", {}).get("areas", [])
@@ -85,6 +80,7 @@ for instance in instances:
         result = estimate_mastery(rubric_text, feedback_text)
         print("\nAI mastery result:")
         print(result)
+        save_student_results(grade["userid"], grade["grade"], result)
     except Exception as error:
         print("\nAI error:")
         print(error)

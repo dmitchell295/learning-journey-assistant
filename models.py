@@ -43,6 +43,7 @@ class Assessment(db.Model):
     assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'), nullable=False)
     feedback_text = db.Column(db.Text)
     grade = db.Column(db.Float)
+    mastery_score = db.Column(db.Integer)  # AI score 0-100
     mastery_estimate = db.Column(db.String(30))  # "Not Yet Achieved" | "Partially Achieved" | "Achieved"
     identified_gap = db.Column(db.Text)
     assignment = db.relationship('Assignment')

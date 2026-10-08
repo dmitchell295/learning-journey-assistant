@@ -52,6 +52,8 @@ def get_assessments():
                 "grade": a.grade,
                 "mastery_estimate": a.mastery_estimate,
                 "identified_gap": a.identified_gap,
+                "mastery_score": a.mastery_score,
+                "assignment_name": a.assignment.name,
             }
             for a in assessments
         ]
