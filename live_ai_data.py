@@ -8,14 +8,35 @@ from mastery_estimator import estimate_mastery
 
 BASE_URL = "http://127.0.0.1:5000"
 
-rubric_res = requests.get(f"{BASE_URL}/moodle/rubric/26")
-rubric_data = rubric_res.json()
+def get_live_data(url):
+    try:
+        res = requests.get(url, timeout=10)
+        res.raise_for_status()
+        data = res.json()
+        return data
+    except requests.RequestException as error:
+        print("API error:", error)
+        return None
 
-instance_res = requests.get(f"{BASE_URL}/moodle/rubric/definition/99/instances")
-instance_data = instance_res.json()
 
-grade_res = requests.get(f"{BASE_URL}/moodle/assignment/10/grades")
-grade_data = grade_res.json()
+rubric_data = get_live_data(f"{BASE_URL}/moodle/rubric/26")
+instance_data = get_live_data(f"{BASE_URL}/moodle/rubric/definition/99/instances")
+grade_data = get_live_data(f"{BASE_URL}/moodle/assignment/10/grades")
+
+if rubric_data == None or instance_data == None or grade_data == None:
+    print("Live data is not available. Please try again later.")
+    sys.exit()
+
+
+
+
+
+
+
+areas = rubric_data.get("rubric", {}).get("areas", [])
+if len(areas) == 0 or not areas[0].get("definitions"):
+    print("Rubric data is missing.")
+    sys.exit()
 
 definition = rubric_data["rubric"]["areas"][0]["definitions"][0]
 criteria = definition["rubric"]["rubric_criteria"]
@@ -30,6 +51,9 @@ for g in grades:
     grade_map[g["id"]] = g
 
 instances = instance_data["instances"]["instances"]
+
+
+
 for instance in instances:
     if instance["status"] != 1:
         continue
