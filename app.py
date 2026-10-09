@@ -1,11 +1,16 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 from models import db, Student, Subject, Assessment, RubricCriterion
 from moodle_client import get_courses, get_course_outcomes, get_grade_items, get_assignments, get_grades, get_grading_definitions, get_gradingform_instances, MoodleAPIError
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///learning_journey.db'
-CORS(app)
+database_url = os.environ.get("DATABASE_URL", "sqlite:///learning_journey.db")
+# Some platforms hand out postgres:// but SQLAlchemy needs postgresql://
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+CORS(app, origins=["https://dmitchell295.github.io", "http://localhost:5173"])
 db.init_app(app)
 
 with app.app_context():
