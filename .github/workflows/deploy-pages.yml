@@ -20,7 +20,7 @@ jobs:
       - run: npm run build
         working-directory: frontend
         env:
-          VITE_API_URL: https://YOUR-BACKEND.onrender.com
+            VITE_API_URL: https://learning-journey-assistant-jf6l.onrender.com
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
