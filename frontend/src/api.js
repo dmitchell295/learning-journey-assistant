@@ -3,7 +3,7 @@
 // Keeping these together means components just import functions,
 // rather than each writing its own fetch logic.
 
-const BASE_URL = "http://127.0.0.1:5000";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
 export async function getStudents() {
   const res = await fetch(`${BASE_URL}/students`);
